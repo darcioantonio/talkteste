@@ -11,12 +11,15 @@ const getServerUrl = () => {
     return process.env.REACT_APP_SERVER_URL;
   }
   
-  // Em produção, usa o mesmo domínio (cliente e servidor no mesmo lugar)
-  if (process.env.NODE_ENV === 'production') {
-    return window.location.origin;
+  // Em produção ou quando não está em localhost, usa o mesmo domínio
+  if (typeof window !== 'undefined') {
+    // Se não estiver em localhost, usa o mesmo domínio
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      return window.location.origin;
+    }
   }
   
-  // Em desenvolvimento, usa localhost
+  // Em desenvolvimento local, usa localhost
   return 'http://localhost:4000';
 };
 
