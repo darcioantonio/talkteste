@@ -1,0 +1,17 @@
+{
+  "name": "talk-chat",
+  "version": "1.0.0",
+  "description": "Chat em tempo real - Aplicação completa",
+  "scripts": {
+    "install-server": "cd server && npm install",
+    "install-client": "cd client && npm install",
+    "install-all": "npm run install-server && npm run install-client",
+    "start-server": "cd server && npm start",
+    "start-client": "cd client && npm start",
+    "dev-server": "cd server && npm run dev"
+  },
+  "keywords": ["chat", "realtime", "socket.io", "react"],
+  "author": "",
+  "license": "ISC"
+}
+
