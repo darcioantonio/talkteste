@@ -37,11 +37,31 @@ function ChatApp({ socket, username }) {
   useEffect(() => {
     if (!socket) return;
 
+    // Função para obter URL do servidor
+    const getServerUrl = () => {
+      if (process.env.REACT_APP_SERVER_URL) {
+        return process.env.REACT_APP_SERVER_URL;
+      }
+      
+      // Em produção ou quando não está em localhost, usa o mesmo domínio
+      if (typeof window !== 'undefined') {
+        if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+          return window.location.origin;
+        }
+      }
+      
+      // Em desenvolvimento local, usa localhost
+      return 'http://localhost:4000';
+    };
+
     // Carregar canais
-    fetch(`${process.env.REACT_APP_SERVER_URL || 'http://localhost:4000'}/api/channels`)
+    fetch(`${getServerUrl()}/api/channels`)
       .then(res => res.json())
       .then(data => {
         setChannels(data.channels);
+      })
+      .catch(err => {
+        console.error('Erro ao carregar canais:', err);
       });
 
     // Receber mensagens
