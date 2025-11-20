@@ -14,6 +14,7 @@ function ChatApp({ socket, username }) {
   const [usersInChannel, setUsersInChannel] = useState([]);
   const [typingUsers, setTypingUsers] = useState([]);
   const [showPushToTalkSettings, setShowPushToTalkSettings] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
   const messagesEndRef = useRef(null);
 
   const {
@@ -28,6 +29,10 @@ function ChatApp({ socket, username }) {
     pushToTalkKey,
     setPushToTalk
   } = useAudio(socket, currentChannel);
+
+  const toggleMute = () => {
+    setIsMuted(prev => !prev);
+  };
 
   useEffect(() => {
     if (!socket) return;
