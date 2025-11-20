@@ -5,7 +5,22 @@ import ChatRoom from './components/ChatRoom';
 import LoginForm from './components/LoginForm';
 
 // URL do servidor - em produção usa a variável de ambiente ou o mesmo domínio
-const SERVER_URL = process.env.REACT_APP_SERVER_URL || 'http://localhost:4000';
+const getServerUrl = () => {
+  // Se tiver variável de ambiente, usa ela
+  if (process.env.REACT_APP_SERVER_URL) {
+    return process.env.REACT_APP_SERVER_URL;
+  }
+  
+  // Em produção, usa o mesmo domínio (cliente e servidor no mesmo lugar)
+  if (process.env.NODE_ENV === 'production') {
+    return window.location.origin;
+  }
+  
+  // Em desenvolvimento, usa localhost
+  return 'http://localhost:4000';
+};
+
+const SERVER_URL = getServerUrl();
 
 function App() {
   const [socket, setSocket] = useState(null);
