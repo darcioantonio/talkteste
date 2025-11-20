@@ -35,6 +35,24 @@ if (process.env.NODE_ENV === 'production') {
   } else {
     console.warn(`⚠️  Diretório de build não encontrado em: ${clientBuildPath}`);
     console.warn('⚠️  Certifique-se de que o build do cliente foi executado antes do deploy.');
+    
+    // Rota fallback quando o build não existe
+    app.get('*', (req, res) => {
+      res.status(500).send(`
+        <html>
+          <head><title>Erro de Build</title></head>
+          <body style="font-family: Arial; padding: 40px; text-align: center;">
+            <h1>⚠️ Erro: Build do cliente não encontrado</h1>
+            <p>O diretório de build do cliente não foi encontrado.</p>
+            <p><strong>Configure o Build Command no Render para:</strong></p>
+            <code style="background: #f5f5f5; padding: 10px; display: block; margin: 20px 0;">
+              npm run build
+            </code>
+            <p>E certifique-se de que o <strong>Root Directory</strong> está vazio (raiz do projeto).</p>
+          </body>
+        </html>
+      `);
+    });
   }
 }
 
