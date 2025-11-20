@@ -3,6 +3,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const server = http.createServer(app);
@@ -64,6 +65,44 @@ app.get('/api/health', (req, res) => {
     channels: channels.size
   });
 });
+
+// Servir arquivos estáticos do frontend (quando buildado) - DEPOIS das rotas da API
+if (process.env.NODE_ENV === 'production') {
+  const clientBuildPath = path.join(__dirname, '../client/build');
+  const indexPath = path.join(clientBuildPath, 'index.html');
+  
+  // Verificar se o diretório build existe
+  if (fs.existsSync(clientBuildPath) && fs.existsSync(indexPath)) {
+    // Servir arquivos estáticos (JS, CSS, imagens, etc.)
+    app.use(express.static(clientBuildPath));
+    
+    // Servir index.html para todas as rotas que não são da API
+    app.get('*', (req, res) => {
+      if (!req.path.startsWith('/api') && !req.path.startsWith('/socket.io')) {
+        res.sendFile(indexPath);
+      }
+    });
+  } else {
+    console.warn(`⚠️  Diretório de build não encontrado em: ${clientBuildPath}`);
+    console.warn('⚠️  Certifique-se de que o build do cliente foi executado antes do deploy.');
+    
+    // Rota fallback quando o build não existe
+    app.get('*', (req, res) => {
+      if (!req.path.startsWith('/api') && !req.path.startsWith('/socket.io')) {
+        res.status(500).send(`
+          <html>
+            <head><title>Erro de Build</title></head>
+            <body style="font-family: Arial; padding: 40px; text-align: center;">
+              <h1>⚠️ Erro: Build do cliente não encontrado</h1>
+              <p>O diretório de build do cliente não foi encontrado.</p>
+              <p><strong>Verifique se o Build Command está configurado corretamente no Render.</strong></p>
+            </body>
+          </html>
+        `);
+      }
+    });
+  }
+}
 
 // Eventos Socket.io
 io.on('connection', (socket) => {
