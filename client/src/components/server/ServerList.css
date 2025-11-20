@@ -1,0 +1,86 @@
+.server-list {
+  width: 72px;
+  background: var(--discord-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.server-list-header {
+  margin-bottom: 8px;
+}
+
+.server-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--discord-grey);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: all 0.2s;
+  font-weight: 600;
+  color: var(--discord-text);
+  font-size: 18px;
+  position: relative;
+}
+
+.server-icon:hover {
+  background: var(--discord-blurple);
+  border-radius: 16px;
+}
+
+.server-icon.active {
+  background: var(--discord-blurple);
+  border-radius: 16px;
+}
+
+.server-icon.active::before {
+  content: '';
+  position: absolute;
+  left: -20px;
+  width: 4px;
+  height: 40px;
+  background: white;
+  border-radius: 0 4px 4px 0;
+}
+
+.home-icon {
+  background: var(--discord-blurple);
+  border-radius: 16px;
+}
+
+.add-server {
+  background: var(--discord-grey);
+  color: var(--discord-green);
+  font-size: 24px;
+  font-weight: 300;
+}
+
+.add-server:hover {
+  background: var(--discord-green);
+  color: white;
+}
+
+.server-divider {
+  width: 32px;
+  height: 2px;
+  background: var(--discord-grey-lighter);
+  margin: 8px 0;
+  border-radius: 1px;
+}
+
+.server-items {
+  flex: 1;
+  overflow-y: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+

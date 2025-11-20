@@ -1,0 +1,79 @@
+.chat-app {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: var(--discord-dark);
+}
+
+.chat-main {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.chat-sidebar {
+  width: 240px;
+  background: var(--discord-grey);
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--discord-grey-lighter);
+}
+
+.users-section {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.users-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--discord-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.user-item:hover {
+  background: var(--discord-grey-lighter);
+}
+
+.user-name {
+  flex: 1;
+  font-size: 14px;
+  color: var(--discord-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.speaking-badge {
+  font-size: 14px;
+  animation: mic-bounce 0.5s infinite;
+}
+
+@keyframes mic-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+

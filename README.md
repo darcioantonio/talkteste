@@ -1,64 +1,102 @@
-# 💬 Talk Chat - Chat em Tempo Real
+# 💬 TalkChat - Discord Clone Completo
 
-Aplicação web de chat em tempo real similar ao Discord, construída com React e Socket.io.
+Aplicação web completa estilo Discord com chat de voz e texto em tempo real, servidores, canais, autenticação e muito mais!
 
 ## 🚀 Funcionalidades
 
-- ✅ **Chat de voz em tempo real** com WebRTC (tipo TeamSpeak/Discord)
-- ✅ Chat de texto em tempo real com WebSocket
-- ✅ Múltiplas salas/canais
-- ✅ Lista de usuários online
-- ✅ Indicador visual de quem está falando
-- ✅ Controles de microfone e áudio
-- ✅ Detecção automática de fala
-- ✅ Indicador de digitação ("está digitando...")
-- ✅ Notificações de entrada/saída de usuários
-- ✅ Interface moderna e responsiva
-- ✅ Design mobile-friendly
+### ✨ Sistema Completo
+- ✅ **Sistema de autenticação** (registro, login, JWT)
+- ✅ **Servidores** (criar, gerenciar, deletar)
+- ✅ **Canais de texto** (múltiplos canais por servidor)
+- ✅ **Canais de voz** com slots limitados
+- ✅ **Canais privados** (acesso restrito)
+- ✅ **Sistema de permissões** (owner, admin, member)
+- ✅ **Chat de texto em tempo real** com Socket.io
+- ✅ **Chat de voz em tempo real** com WebRTC
+- ✅ **Indicadores visuais** (quem está falando, status online)
+- ✅ **Interface estilo Discord** (cores, design, UX)
+- ✅ **Lista de membros** com status
+- ✅ **Histórico de mensagens**
+
+### 🎨 Design Profissional
+- Interface 100% baseada no Discord
+- Cores e temas idênticos
+- Animações suaves
+- Responsivo e moderno
 
 ## 🛠️ Tecnologias
 
 - **Frontend**: React 18
 - **Backend**: Node.js + Express
-- **WebSocket**: Socket.io (para sinalização e chat de texto)
-- **WebRTC**: Para transmissão de áudio peer-to-peer em tempo real
-- **Estilização**: CSS3
+- **Banco de Dados**: MongoDB (Mongoose)
+- **Autenticação**: JWT (jsonwebtoken)
+- **WebSocket**: Socket.io (chat em tempo real)
+- **WebRTC**: Transmissão de áudio peer-to-peer
+- **Estilização**: CSS3 (estilo Discord)
 
 ## 📦 Instalação Local
 
 ### Pré-requisitos
 - Node.js 16+ instalado
+- MongoDB instalado localmente OU conta no MongoDB Atlas (gratuito)
 - npm ou yarn
 
 ### Passo a passo
 
 1. **Clone o repositório** (ou baixe os arquivos)
 
-2. **Instale as dependências do servidor:**
+2. **Configure as variáveis de ambiente:**
+   
+   Crie um arquivo `.env` na pasta `server/`:
+   ```env
+   PORT=4000
+   NODE_ENV=development
+   MONGODB_URI=mongodb://localhost:27017/talkchat
+   JWT_SECRET=seu-secret-key-aqui
+   FRONTEND_URL=http://localhost:3000
+   ```
+
+   **OU** use MongoDB Atlas (recomendado):
+   ```env
+   MONGODB_URI=mongodb+srv://usuario:senha@cluster.mongodb.net/talkchat
+   ```
+
+3. **Instale as dependências do servidor:**
 ```bash
 cd server
 npm install
 ```
 
-3. **Instale as dependências do cliente:**
+4. **Instale as dependências do cliente:**
 ```bash
 cd ../client
 npm install
 ```
 
-4. **Inicie o servidor:**
+5. **Inicie o MongoDB** (se usando local):
 ```bash
-cd ../server
+# Windows
+net start MongoDB
+
+# Linux/Mac
+sudo systemctl start mongod
+# ou
+mongod
+```
+
+6. **Inicie o servidor:**
+```bash
+cd server
 npm start
 ```
 O servidor rodará em `http://localhost:4000`
 
-5. **Em outro terminal, inicie o cliente:**
+7. **Em outro terminal, inicie o cliente:**
 ```bash
 cd client
 npm start
 ```
-O cliente abrirá automaticamente em `http://localhost:3000` (React usa porta 3000 por padrão, mas se conecta ao servidor na porta 4000)
+O cliente abrirá automaticamente em `http://localhost:3000`
 
 ## 🌐 Deploy no Render.com
 

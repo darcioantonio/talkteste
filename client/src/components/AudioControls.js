@@ -1,20 +1,34 @@
 import React from 'react';
 import './AudioControls.css';
 
-function AudioControls({ isMicOn, isSpeaking, onToggleMic, audioEnabled, onToggleAudio }) {
+function AudioControls({
+  isMicOn,
+  isSpeaking,
+  onToggleMic,
+  audioEnabled,
+  onToggleAudio,
+  onPushToTalkSettings,
+  pushToTalkEnabled,
+  isMuted,
+  onToggleMute
+}) {
   return (
     <div className="audio-controls">
       <button
-        className={`mic-button ${isMicOn ? 'on' : 'off'} ${isSpeaking ? 'speaking' : ''}`}
+        className={`mic-button ${isMicOn ? 'on' : 'off'} ${isSpeaking ? 'speaking' : ''} ${isMuted ? 'muted' : ''}`}
         onClick={onToggleMic}
         title={isMicOn ? 'Desligar microfone' : 'Ligar microfone'}
       >
         {isMicOn ? (
-          <span className="mic-icon">🎤</span>
+          isMuted ? (
+            <span className="mic-icon">🔇</span>
+          ) : (
+            <span className="mic-icon">🎤</span>
+          )
         ) : (
           <span className="mic-icon muted">🎤</span>
         )}
-        {isSpeaking && <span className="speaking-indicator"></span>}
+        {isSpeaking && !isMuted && <span className="speaking-indicator"></span>}
       </button>
       
       <button
@@ -24,9 +38,28 @@ function AudioControls({ isMicOn, isSpeaking, onToggleMic, audioEnabled, onToggl
       >
         {audioEnabled ? '🔊' : '🔇'}
       </button>
+
+      {isMicOn && (
+        <>
+          <button
+            className={`mute-button ${isMuted ? 'active' : ''}`}
+            onClick={onToggleMute}
+            title={isMuted ? 'Desmutar' : 'Mutar'}
+          >
+            {isMuted ? '🔇' : '🎤'}
+          </button>
+
+          <button
+            className={`push-to-talk-button ${pushToTalkEnabled ? 'active' : ''}`}
+            onClick={onPushToTalkSettings}
+            title="Configurar Push-to-Talk"
+          >
+            ⌨️
+          </button>
+        </>
+      )}
     </div>
   );
 }
 
 export default AudioControls;
-

@@ -1,14 +1,27 @@
 services:
-  # Backend Service (serves both API and frontend static files)
+  # Backend Service
   - type: web
     name: talk-chat-server
     env: node
-    buildCommand: npm run build
-    startCommand: npm start
+    buildCommand: cd server && npm install
+    startCommand: cd server && npm start
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 4000
     healthCheckPath: /api/health
+
+  # Frontend Service (Static Site)
+  - type: web
+    name: talk-chat-client
+    env: static
+    buildCommand: cd client && npm install && npm run build
+    staticPublishPath: client/build
+    envVars:
+      - key: REACT_APP_SERVER_URL
+        fromService:
+          type: web
+          name: talk-chat-server
+          property: host
 

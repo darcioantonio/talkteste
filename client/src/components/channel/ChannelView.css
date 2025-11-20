@@ -1,0 +1,35 @@
+.channel-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--discord-grey-light);
+  overflow: hidden;
+}
+
+.channel-header {
+  height: 48px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 0 rgba(4, 4, 5, 0.2), 0 1.5px 0 rgba(6, 6, 7, 0.05);
+  z-index: 2;
+}
+
+.channel-header-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.channel-header-icon {
+  font-size: 24px;
+  color: var(--discord-text-muted);
+}
+
+.channel-header-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--discord-text);
+}
+

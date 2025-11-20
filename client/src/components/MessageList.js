@@ -1,29 +1,31 @@
 import React from 'react';
 import './MessageList.css';
 
-function MessageList({ messages, currentUser, typingUsers }) {
+function MessageList({ messages, typingUsers, messagesEndRef }) {
   const formatTime = (timestamp) => {
     const date = new Date(timestamp);
-    return date.toLocaleTimeString('pt-BR', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
+    return date.toLocaleTimeString('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit'
     });
   };
 
   return (
     <div className="message-list">
       {messages.map((message) => (
-        <div
-          key={message.id}
-          className={`message ${message.username === currentUser ? 'own-message' : ''} ${message.isSystem ? 'system-message' : ''}`}
-        >
-          {!message.isSystem && (
-            <div className="message-header">
-              <span className="message-username">{message.username}</span>
-              <span className="message-time">{formatTime(message.timestamp)}</span>
+        <div key={message.id} className="message-wrapper">
+          <div className="message-avatar">
+            <div className="message-avatar-placeholder">
+              {message.username.charAt(0).toUpperCase()}
             </div>
-          )}
-          <div className="message-content">{message.message}</div>
+          </div>
+          <div className="message-content-wrapper">
+            <div className="message-header">
+              <span className="message-author">{message.username}</span>
+              <span className="message-timestamp">{formatTime(message.timestamp)}</span>
+            </div>
+            <div className="message-content">{message.content}</div>
+          </div>
         </div>
       ))}
       
@@ -39,9 +41,10 @@ function MessageList({ messages, currentUser, typingUsers }) {
           </span>
         </div>
       )}
+      
+      <div ref={messagesEndRef} />
     </div>
   );
 }
 
 export default MessageList;
-

@@ -1,0 +1,67 @@
+.auth-page {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.auth-container {
+  background: var(--discord-grey);
+  border-radius: 8px;
+  padding: 40px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.auth-logo {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--discord-text);
+  margin-bottom: 10px;
+}
+
+.auth-subtitle {
+  color: var(--discord-text-muted);
+  font-size: 16px;
+}
+
+.auth-error {
+  background: var(--discord-red);
+  color: white;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.auth-switch {
+  margin-top: 20px;
+  text-align: center;
+  color: var(--discord-text-muted);
+  font-size: 14px;
+}
+
+.auth-link-button {
+  background: none;
+  border: none;
+  color: var(--discord-text-link);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  margin-left: 5px;
+  text-decoration: underline;
+}
+
+.auth-link-button:hover {
+  color: var(--discord-blurple);
+}
+

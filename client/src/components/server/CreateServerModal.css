@@ -1,0 +1,20 @@
+.discord-modal-body .form-group {
+  margin-bottom: 20px;
+}
+
+.discord-modal-body .form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--discord-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.discord-modal-body textarea {
+  resize: vertical;
+  min-height: 60px;
+  font-family: inherit;
+}
+
