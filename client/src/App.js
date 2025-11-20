@@ -4,7 +4,26 @@ import './styles/discord.css';
 import './App.css';
 import ChatApp from './components/ChatApp';
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL || 'http://localhost:4000';
+// URL do servidor - em produção usa a variável de ambiente ou o mesmo domínio
+const getServerUrl = () => {
+  // Se tiver variável de ambiente, usa ela
+  if (process.env.REACT_APP_SERVER_URL) {
+    return process.env.REACT_APP_SERVER_URL;
+  }
+  
+  // Em produção ou quando não está em localhost, usa o mesmo domínio
+  if (typeof window !== 'undefined') {
+    // Se não estiver em localhost, usa o mesmo domínio
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      return window.location.origin;
+    }
+  }
+  
+  // Em desenvolvimento local, usa localhost
+  return 'http://localhost:4000';
+};
+
+const SERVER_URL = getServerUrl();
 
 function App() {
   const [socket, setSocket] = useState(null);
