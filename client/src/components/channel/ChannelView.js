@@ -5,7 +5,7 @@ import MessageInput from './MessageInput';
 import VoiceChannel from './VoiceChannel';
 import './ChannelView.css';
 
-function ChannelView({ socket, server, channel, user }) {
+function ChannelView({ socket, server, channel, user, onMobileMenuClick }) {
   const [messages, setMessages] = useState([]);
   const [typingUsers, setTypingUsers] = useState([]);
   const messagesEndRef = useRef(null);
@@ -82,6 +82,7 @@ function ChannelView({ socket, server, channel, user }) {
         server={server}
         channel={channel}
         user={user}
+        onMobileMenuClick={onMobileMenuClick}
       />
     );
   }
@@ -89,6 +90,11 @@ function ChannelView({ socket, server, channel, user }) {
   return (
     <div className="channel-view">
       <div className="channel-header">
+        {onMobileMenuClick && (
+          <button className="mobile-menu-btn" onClick={onMobileMenuClick}>
+            ☰
+          </button>
+        )}
         <div className="channel-header-info">
           <span className="channel-header-icon">#</span>
           <h2 className="channel-header-name">{channel.name}</h2>
@@ -101,7 +107,7 @@ function ChannelView({ socket, server, channel, user }) {
         currentUser={user}
       />
       <div ref={messagesEndRef} />
-      
+
       <MessageInput
         onSendMessage={handleSendMessage}
         onTyping={handleTyping}

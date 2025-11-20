@@ -16,6 +16,8 @@ function MainApp() {
   const [servers, setServers] = useState([]);
   const [selectedServer, setSelectedServer] = useState(null);
   const [selectedChannel, setSelectedChannel] = useState(null);
+  const [channelUsers, setChannelUsers] = useState({});
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,6 +31,35 @@ function MainApp() {
 
     newSocket.on('connect', () => {
       console.log('Conectado ao servidor');
+    });
+
+    // Listeners para usuários nos canais
+    newSocket.on('users-in-channel', ({ channelId, users }) => {
+      setChannelUsers(prev => ({
+        ...prev,
+        [channelId]: users
+      }));
+    });
+
+    newSocket.on('user-joined-channel', ({ channelId, username, socketId }) => {
+      setChannelUsers(prev => {
+        const currentUsers = prev[channelId] || [];
+        if (currentUsers.find(u => u.socketId === socketId)) return prev;
+        return {
+          ...prev,
+          [channelId]: [...currentUsers, { socketId, username }]
+        };
+      });
+    });
+
+    newSocket.on('user-left-channel', ({ channelId, socketId }) => {
+      setChannelUsers(prev => {
+        const currentUsers = prev[channelId] || [];
+        return {
+          ...prev,
+          [channelId]: currentUsers.filter(u => u.socketId !== socketId)
+        };
+      });
     });
 
     setSocket(newSocket);
@@ -97,31 +128,57 @@ function MainApp() {
 
   return (
     <div className="main-app">
-      <ServerList
-        servers={servers}
-        selectedServer={selectedServer}
-        onSelectServer={handleSelectServer}
-        onCreateServer={handleCreateServer}
-      />
-      
-      {selectedServer && (
-        <>
+      <div className={`sidebar-wrapper ${showMobileSidebar ? 'mobile-visible' : ''}`}>
+        <ServerList
+          servers={servers}
+          selectedServer={selectedServer}
+          onSelectServer={(id) => {
+            handleSelectServer(id);
+          }}
+          onCreateServer={handleCreateServer}
+        />
+
+        {selectedServer && (
           <ServerSidebar
             server={selectedServer}
             selectedChannel={selectedChannel}
-            onSelectChannel={setSelectedChannel}
+            onSelectChannel={(channel) => {
+              setSelectedChannel(channel);
+              setShowMobileSidebar(false);
+            }}
             onServerUpdate={loadServers}
+            channelUsers={channelUsers}
+            user={user}
+            onLogout={logout}
           />
-          
+        )}
+      </div>
+
+      {showMobileSidebar && (
+        <div
+          className="mobile-overlay"
+          onClick={() => setShowMobileSidebar(false)}
+        />
+      )}
+
+      {selectedServer && (
+        <>
           {selectedChannel ? (
             <ChannelView
               socket={socket}
               server={selectedServer}
               channel={selectedChannel}
               user={user}
+              onMobileMenuClick={() => setShowMobileSidebar(true)}
             />
           ) : (
             <div className="channel-placeholder">
+              <button
+                className="mobile-menu-btn"
+                onClick={() => setShowMobileSidebar(true)}
+              >
+                ☰
+              </button>
               <h2>Selecione um canal</h2>
             </div>
           )}
@@ -130,15 +187,21 @@ function MainApp() {
 
       {!selectedServer && (
         <div className="no-server-selected">
+          <button
+            className="mobile-menu-btn"
+            onClick={() => setShowMobileSidebar(true)}
+          >
+            ☰
+          </button>
           <h2>Bem-vindo ao TalkChat!</h2>
           <p>Crie ou selecione um servidor para começar</p>
+          <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', maxWidth: '300px' }}>
+            <UserPanel user={user} onLogout={logout} />
+          </div>
         </div>
       )}
-
-      <UserPanel user={user} onLogout={logout} />
     </div>
   );
 }
 
 export default MainApp;
-

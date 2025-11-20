@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import * as api from '../../utils/api';
 import CreateChannelModal from './CreateChannelModal';
+import UserPanel from '../user/UserPanel';
 import './ServerSidebar.css';
 
-function ServerSidebar({ server, selectedChannel, onSelectChannel, onServerUpdate }) {
+function ServerSidebar({ server, selectedChannel, onSelectChannel, onServerUpdate, channelUsers = {}, user, onLogout }) {
   const [showCreateChannel, setShowCreateChannel] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
@@ -86,25 +87,40 @@ function ServerSidebar({ server, selectedChannel, onSelectChannel, onServerUpdat
         </div>
         <div className="channels-list">
           {voiceChannels.map((channel) => (
-            <div
-              key={channel._id}
-              className={`channel-item voice ${selectedChannel?._id === channel._id ? 'active' : ''}`}
-              onClick={() => onSelectChannel(channel)}
-            >
-              <span className="channel-icon">🔊</span>
-              <span className="channel-name">{channel.name}</span>
-              {channel.voiceSettings?.maxUsers > 0 && (
-                <span className="channel-slots">
-                  {channel.voiceSettings.maxUsers} slots
-                </span>
-              )}
-              {channel.voiceSettings?.isPrivate && (
-                <span className="channel-private">🔒</span>
+            <div key={channel._id} className="channel-container">
+              <div
+                className={`channel-item voice ${selectedChannel?._id === channel._id ? 'active' : ''}`}
+                onClick={() => onSelectChannel(channel)}
+              >
+                <span className="channel-icon">🔊</span>
+                <span className="channel-name">{channel.name}</span>
+                {channel.voiceSettings?.maxUsers > 0 && (
+                  <span className="channel-slots">
+                    {channel.voiceSettings.maxUsers} slots
+                  </span>
+                )}
+                {channel.voiceSettings?.isPrivate && (
+                  <span className="channel-private">🔒</span>
+                )}
+              </div>
+              {channelUsers[channel._id] && channelUsers[channel._id].length > 0 && (
+                <div className="channel-users-list">
+                  {channelUsers[channel._id].map((u) => (
+                    <div key={u.socketId} className="channel-user-item">
+                      <div className="user-avatar-mini">
+                        {u.username.charAt(0).toUpperCase()}
+                      </div>
+                      <span className="user-name-mini">{u.username}</span>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           ))}
         </div>
       </div>
+
+      <UserPanel user={user} onLogout={onLogout} />
 
       {showCreateChannel && (
         <CreateChannelModal
@@ -117,4 +133,3 @@ function ServerSidebar({ server, selectedChannel, onSelectChannel, onServerUpdat
 }
 
 export default ServerSidebar;
-

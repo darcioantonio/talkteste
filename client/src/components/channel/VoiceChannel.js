@@ -4,7 +4,7 @@ import AudioControls from '../AudioControls';
 import UsersList from '../UsersList';
 import './VoiceChannel.css';
 
-function VoiceChannel({ socket, server, channel, user }) {
+function VoiceChannel({ socket, server, channel, user, onMobileMenuClick }) {
   const {
     isMicOn,
     isSpeaking,
@@ -22,6 +22,11 @@ function VoiceChannel({ socket, server, channel, user }) {
   return (
     <div className="voice-channel">
       <div className="voice-channel-header">
+        {onMobileMenuClick && (
+          <button className="mobile-menu-btn" onClick={onMobileMenuClick}>
+            ☰
+          </button>
+        )}
         <div className="voice-channel-info">
           <span className="voice-channel-icon">🔊</span>
           <h2 className="voice-channel-name">{channel.name}</h2>
@@ -45,8 +50,8 @@ function VoiceChannel({ socket, server, channel, user }) {
               {isFull
                 ? 'Canal cheio'
                 : maxUsers > 0
-                ? `${maxUsers - currentUsers} slots disponíveis`
-                : 'Canal de voz ilimitado'}
+                  ? `${maxUsers - currentUsers} slots disponíveis`
+                  : 'Canal de voz ilimitado'}
             </p>
           </div>
 
