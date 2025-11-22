@@ -4,7 +4,7 @@ import AudioControls from '../AudioControls';
 import UsersList from '../UsersList';
 import './VoiceChannel.css';
 
-function VoiceChannel({ socket, server, channel, user, onMobileMenuClick }) {
+function VoiceChannel({ socket, server, channel, user, onMobileBack }) {
   const {
     isMicOn,
     isSpeaking,
@@ -22,9 +22,9 @@ function VoiceChannel({ socket, server, channel, user, onMobileMenuClick }) {
   return (
     <div className="voice-channel">
       <div className="voice-channel-header">
-        {onMobileMenuClick && (
-          <button className="mobile-menu-btn" onClick={onMobileMenuClick}>
-            ☰
+        {onMobileBack && (
+          <button className="mobile-back-btn" onClick={onMobileBack}>
+            ←
           </button>
         )}
         <div className="voice-channel-info">

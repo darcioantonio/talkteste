@@ -7,6 +7,7 @@ import ServerSidebar from './server/ServerSidebar';
 import ChannelView from './channel/ChannelView';
 import UserPanel from './user/UserPanel';
 import './MainApp.css';
+import MobileNavBar from './mobile/MobileNavBar';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL || 'http://localhost:4000';
 
@@ -17,7 +18,8 @@ function MainApp() {
   const [selectedServer, setSelectedServer] = useState(null);
   const [selectedChannel, setSelectedChannel] = useState(null);
   const [channelUsers, setChannelUsers] = useState({});
-  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+  const [mobileView, setMobileView] = useState('nav'); // 'nav' | 'chat'
+  const [activeTab, setActiveTab] = useState('servers'); // 'servers' | 'messages' | 'notifications' | 'you'
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -99,6 +101,8 @@ function MainApp() {
       } else {
         setSelectedChannel(null);
       }
+      // Ensure we are on the servers tab
+      setActiveTab('servers');
     } catch (error) {
       console.error('Erro ao carregar servidor:', error);
     }
@@ -118,6 +122,83 @@ function MainApp() {
     }
   };
 
+  const handleChannelSelect = (channel) => {
+    setSelectedChannel(channel);
+    setMobileView('chat');
+  };
+
+  const handleMobileBack = () => {
+    setMobileView('nav');
+  };
+
+  const renderMobileContent = () => {
+    switch (activeTab) {
+      case 'servers':
+        return (
+          <div className="sidebar-wrapper">
+            <ServerList
+              servers={servers}
+              selectedServer={selectedServer}
+              onSelectServer={(id) => {
+                handleSelectServer(id);
+                setMobileView('nav');
+              }}
+              onCreateServer={handleCreateServer}
+            />
+
+            {selectedServer ? (
+              <ServerSidebar
+                server={selectedServer}
+                selectedChannel={selectedChannel}
+                onSelectChannel={handleChannelSelect}
+                onServerUpdate={loadServers}
+                channelUsers={channelUsers}
+                user={user}
+                onLogout={logout}
+              />
+            ) : (
+              <div className="no-server-selected">
+                <h2>Bem-vindo ao TalkChat!</h2>
+                <p>Selecione um servidor</p>
+              </div>
+            )}
+          </div>
+        );
+      case 'you':
+        return (
+          <div className="mobile-tab-content">
+            <div className="mobile-profile-view">
+              <div className="mobile-profile-header">
+                <div className="mobile-profile-avatar">
+                  {user.avatar ? (
+                    <img src={user.avatar} alt={user.username} />
+                  ) : (
+                    user.username.charAt(0).toUpperCase()
+                  )}
+                </div>
+                <h2>{user.username}</h2>
+                <span className="status-badge online">Online</span>
+              </div>
+              <div className="mobile-profile-actions">
+                <button className="profile-action-btn" onClick={logout}>
+                  Sair da Conta
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      default:
+        return (
+          <div className="mobile-tab-content">
+            <div className="placeholder-tab">
+              <h3>Em breve</h3>
+              <p>A aba {activeTab} está em desenvolvimento.</p>
+            </div>
+          </div>
+        );
+    }
+  };
+
   if (loading) {
     return (
       <div className="main-app-loading">
@@ -127,78 +208,72 @@ function MainApp() {
   }
 
   return (
-    <div className="main-app">
-      <div className={`sidebar-wrapper ${showMobileSidebar ? 'mobile-visible' : ''}`}>
-        <ServerList
-          servers={servers}
-          selectedServer={selectedServer}
-          onSelectServer={(id) => {
-            handleSelectServer(id);
-          }}
-          onCreateServer={handleCreateServer}
-        />
-
-        {selectedServer && (
-          <ServerSidebar
-            server={selectedServer}
-            selectedChannel={selectedChannel}
-            onSelectChannel={(channel) => {
-              setSelectedChannel(channel);
-              setShowMobileSidebar(false);
+    <div className={`main-app ${mobileView === 'chat' ? 'mobile-view-chat' : 'mobile-view-nav'}`}>
+      {/* Desktop View / Mobile Server Tab */}
+      <div className="desktop-layout">
+        <div className="sidebar-wrapper">
+          <ServerList
+            servers={servers}
+            selectedServer={selectedServer}
+            onSelectServer={(id) => {
+              handleSelectServer(id);
+              setMobileView('nav');
             }}
-            onServerUpdate={loadServers}
-            channelUsers={channelUsers}
-            user={user}
-            onLogout={logout}
+            onCreateServer={handleCreateServer}
           />
-        )}
+
+          {selectedServer && (
+            <ServerSidebar
+              server={selectedServer}
+              selectedChannel={selectedChannel}
+              onSelectChannel={handleChannelSelect}
+              onServerUpdate={loadServers}
+              channelUsers={channelUsers}
+              user={user}
+              onLogout={logout}
+            />
+          )}
+        </div>
       </div>
 
-      {showMobileSidebar && (
-        <div
-          className="mobile-overlay"
-          onClick={() => setShowMobileSidebar(false)}
-        />
-      )}
+      {/* Mobile Content Area (Replaces sidebar-wrapper on mobile) */}
+      <div className="mobile-layout-content">
+        {renderMobileContent()}
+      </div>
 
+      {/* Chat View (Shared) */}
       {selectedServer && (
-        <>
+        <div className="channel-view-wrapper">
           {selectedChannel ? (
             <ChannelView
               socket={socket}
               server={selectedServer}
               channel={selectedChannel}
               user={user}
-              onMobileMenuClick={() => setShowMobileSidebar(true)}
+              onMobileBack={handleMobileBack}
             />
           ) : (
             <div className="channel-placeholder">
-              <button
-                className="mobile-menu-btn"
-                onClick={() => setShowMobileSidebar(true)}
-              >
-                ☰
-              </button>
               <h2>Selecione um canal</h2>
             </div>
           )}
-        </>
+        </div>
       )}
 
-      {!selectedServer && (
-        <div className="no-server-selected">
-          <button
-            className="mobile-menu-btn"
-            onClick={() => setShowMobileSidebar(true)}
-          >
-            ☰
-          </button>
+      {!selectedServer && !activeTab && (
+        <div className="no-server-selected desktop-only">
           <h2>Bem-vindo ao TalkChat!</h2>
           <p>Crie ou selecione um servidor para começar</p>
-          <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', maxWidth: '300px' }}>
-            <UserPanel user={user} onLogout={logout} />
-          </div>
         </div>
+      )}
+
+      {/* Mobile Bottom Nav */}
+      {mobileView === 'nav' && (
+        <MobileNavBar
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          user={user}
+        />
       )}
     </div>
   );
